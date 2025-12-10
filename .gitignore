@@ -1,0 +1,57 @@
+# dependencies
+
+node_modules/
+
+
+
+# next.js build output
+
+.next/
+
+out/
+
+
+
+# macOS
+
+.DS_Store
+
+
+
+# logs
+
+npm-debug.log*
+
+yarn-debug.log*
+
+yarn-error.log*
+
+
+
+# local env
+
+.env.local
+
+.env*
+
+!.env.example
+
+
+
+# build
+
+dist/
+
+build/
+
+
+
+# Xcode
+
+ios/App/App/public/
+
+ios/App/build/
+
+ios/App/DerivedData/
+serviceAccount.json
+serviceAccount.json

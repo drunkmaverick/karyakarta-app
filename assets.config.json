@@ -1,0 +1,22 @@
+{
+  "icon": {
+    "source": "apps/mobile/assets/icon.png",
+    "platforms": {
+      "android": {
+        "adaptiveIcon": {
+          "foreground": "apps/mobile/assets/icon.png",
+          "background": "#ffffff"
+        }
+      }
+    }
+  },
+  "splash": {
+    "source": "apps/mobile/assets/splash.png",
+    "platforms": {
+      "android": {
+        "background": "#ffffff",
+        "darkBackground": "#1f2937"
+      }
+    }
+  }
+}

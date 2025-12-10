@@ -1,0 +1,99 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Customers: signed-in customer can read own data
+    match /customers/{customerId} {
+      allow read: if request.auth != null && request.auth.uid == customerId;
+      allow write: if request.auth != null && request.auth.token.admin == true; // Admin only
+    }
+
+    // Providers: signed-in provider can read own data
+    match /providers/{providerId} {
+      allow read: if request.auth != null && request.auth.uid == providerId;
+      allow write: if request.auth != null && request.auth.token.admin == true; // Admin only
+    }
+
+    // Jobs: customers can read own jobs, providers can read assigned jobs
+    match /jobs/{jobId} {
+      allow read: if request.auth != null && (
+        resource.data.customerId == request.auth.uid || 
+        resource.data.providerId == request.auth.uid
+      );
+      allow create: if request.auth != null && request.resource.data.customerId == request.auth.uid;
+      allow update: if request.auth != null && (
+        // Customer can only add rating to completed jobs
+        (resource.data.customerId == request.auth.uid && 
+         resource.data.status == 'completed' && 
+         request.resource.data.rating != null) ||
+        // Provider can update status transitions
+        (resource.data.providerId == request.auth.uid && 
+         isStatusTransition(resource.data.status, request.resource.data.status))
+      );
+      allow write: if request.auth != null && request.auth.token.admin == true; // Admin only
+    }
+
+    // Payouts: providers can read own payouts
+    match /payouts/{payoutId} {
+      allow read: if request.auth != null && resource.data.providerId == request.auth.uid;
+      allow write: if request.auth != null && request.auth.token.admin == true; // Admin only
+    }
+
+    // Push tokens: write by same user, read by admin only
+    match /pushTokens/{token} {
+      allow create, update, delete: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow read: if request.auth != null && request.auth.token.admin == true; // Admin only
+    }
+
+    // Analytics and other read-only collections
+    match /analytics/{docId} {
+      allow read: if true; // Public read
+      allow write: if request.auth != null && request.auth.token.admin == true; // Admin only
+    }
+
+    // Campaigns: admin only
+    match /campaigns/{docId} {
+      allow read: if true; // Public read
+      allow write: if request.auth != null && request.auth.token.admin == true; // Admin only
+    }
+
+    // Default deny for any other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+
+  // Helper function to validate status transitions
+  function isStatusTransition(from, to) {
+    return (from == 'pending' && to == 'accepted') ||
+           (from == 'accepted' && to == 'in_progress') ||
+           (from == 'in_progress' && to == 'completed');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

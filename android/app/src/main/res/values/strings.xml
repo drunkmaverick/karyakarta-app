@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Karyakarta</string>
+    <string name="title_activity_main">Karyakarta</string>
+    <string name="package_name">co.karyakarta.app</string>
+    <string name="custom_url_scheme">co.karyakarta.app</string>
+    
+    <!-- Permission Rationale Strings -->
+    <string name="permission_internet_rationale">Internet access is required to connect to our servers for booking services, syncing data, and receiving real-time updates about your home service appointments.</string>
+    
+    <!-- Location Permission Rationale (for future use if needed) -->
+    <string name="permission_location_rationale">Location access helps us find nearby service providers and show you relevant services in your area. This improves service quality and reduces travel time for our providers.</string>
+    
+    <!-- Notification Permission Rationale (for future use if needed) -->
+    <string name="permission_notification_rationale">Notifications keep you updated about your service appointments, provider updates, and important booking confirmations. You can disable this anytime in settings.</string>
+    
+    <!-- App Feature Descriptions -->
+    <string name="app_description">Karyakarta connects you with trusted home service providers for cleaning, maintenance, and repair services. Book, track, and manage your home services all in one place.</string>
+    
+    <!-- Privacy and Security -->
+    <string name="privacy_notice">Your privacy is important to us. We only collect necessary information to provide our services and never share your personal data with third parties without your consent.</string>
+</resources>

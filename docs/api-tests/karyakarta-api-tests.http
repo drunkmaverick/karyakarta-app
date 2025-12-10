@@ -1,0 +1,243 @@
+### KaryaKarta API Tests
+### Base URL - Update this for your environment
+@baseUrl = http://localhost:3000
+@adminCookie = 
+
+### 1. Health Check
+GET {{baseUrl}}/api/health
+Content-Type: application/json
+
+### 2. Self Check (Firestore connectivity)
+GET {{baseUrl}}/api/self-check
+Content-Type: application/json
+
+### 3. Admin Login
+POST {{baseUrl}}/api/admin/login
+Content-Type: application/json
+
+{
+  "password": "admin123"
+}
+
+> {%
+  client.global.set("adminCookie", response.headers.values("set-cookie")[0]);
+%}
+
+### 4. Campaigns - List
+GET {{baseUrl}}/api/campaigns/list
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+### 5. Campaigns - Create
+POST {{baseUrl}}/api/campaigns/create
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+{
+  "title": "Test Campaign",
+  "message": "This is a test campaign for API testing",
+  "targetArea": "Mumbai",
+  "radius": 5000,
+  "scheduledFor": "2024-12-31T23:59:59Z"
+}
+
+> {%
+  client.global.set("campaignId", response.body.id);
+%}
+
+### 6. Campaigns - Get
+GET {{baseUrl}}/api/campaigns/get?id={{campaignId}}
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+### 7. Campaigns - Update (if implemented)
+PUT {{baseUrl}}/api/campaigns/update
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+{
+  "id": "{{campaignId}}",
+  "title": "Updated Test Campaign",
+  "message": "This is an updated test campaign"
+}
+
+### 8. Campaigns - Delete (if implemented)
+DELETE {{baseUrl}}/api/campaigns/delete?id={{campaignId}}
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+### 9. Push - Dry Run
+POST {{baseUrl}}/api/push/notify-campaign
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+{
+  "campaignId": "{{campaignId}}",
+  "dryRun": true
+}
+
+### 10. Push - Register Token
+POST {{baseUrl}}/api/push/register-token
+Content-Type: application/json
+
+{
+  "token": "test_token_12345",
+  "userId": "test_user_123",
+  "role": "customer",
+  "lat": 19.0760,
+  "lng": 72.8777
+}
+
+### 11. Push - Test Notification
+POST {{baseUrl}}/api/push/test
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+{
+  "title": "Test Notification",
+  "body": "This is a test notification",
+  "userId": "test_user_123"
+}
+
+### 12. Push - Send Campaign
+POST {{baseUrl}}/api/push/notify-campaign
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+{
+  "campaignId": "{{campaignId}}",
+  "dryRun": false
+}
+
+### 13. Push - Unregister Token
+POST {{baseUrl}}/api/push/unregister-token
+Content-Type: application/json
+
+{
+  "token": "test_token_12345"
+}
+
+### 14. Jobs - Create (Customer)
+POST {{baseUrl}}/api/jobs/create
+Content-Type: application/json
+Authorization: Bearer mock_customer_token
+
+{
+  "serviceType": "deep_clean",
+  "scheduledForISO": "2024-12-31T10:00:00Z",
+  "address": "123 Test Street, Mumbai",
+  "notes": "Test job for API testing",
+  "price": 1500
+}
+
+> {%
+  client.global.set("jobId", response.body.id);
+%}
+
+### 15. Jobs - By Customer
+GET {{baseUrl}}/api/jobs/by-customer
+Authorization: Bearer mock_customer_token
+Content-Type: application/json
+
+### 16. Jobs - Rate (Customer)
+POST {{baseUrl}}/api/jobs/rate
+Content-Type: application/json
+Authorization: Bearer mock_customer_token
+
+{
+  "jobId": "{{jobId}}",
+  "score": 5,
+  "comment": "Excellent service!"
+}
+
+### 17. Jobs - Repeat (Customer)
+POST {{baseUrl}}/api/jobs/repeat
+Content-Type: application/json
+Authorization: Bearer mock_customer_token
+
+{
+  "jobId": "{{jobId}}",
+  "scheduledForISO": "2025-01-15T14:00:00Z"
+}
+
+### 18. Provider Jobs - List
+GET {{baseUrl}}/api/provider/jobs
+Authorization: Bearer mock_provider_token
+Content-Type: application/json
+
+### 19. Provider Jobs - Update Status
+POST {{baseUrl}}/api/provider/jobs/update-status
+Content-Type: application/json
+Authorization: Bearer mock_provider_token
+
+{
+  "jobId": "{{jobId}}",
+  "to": "accepted"
+}
+
+### 20. Provider Jobs - Update Status (In Progress)
+POST {{baseUrl}}/api/provider/jobs/update-status
+Content-Type: application/json
+Authorization: Bearer mock_provider_token
+
+{
+  "jobId": "{{jobId}}",
+  "to": "in_progress"
+}
+
+### 21. Provider Jobs - Update Status (Completed)
+POST {{baseUrl}}/api/provider/jobs/update-status
+Content-Type: application/json
+Authorization: Bearer mock_provider_token
+
+{
+  "jobId": "{{jobId}}",
+  "to": "completed"
+}
+
+### 22. Provider Payouts - List
+GET {{baseUrl}}/api/provider/payouts
+Authorization: Bearer mock_provider_token
+Content-Type: application/json
+
+### 23. Admin Logout
+POST {{baseUrl}}/api/admin/logout
+Cookie: {{adminCookie}}
+Content-Type: application/json
+
+### 24. Error Test - Invalid Job ID
+POST {{baseUrl}}/api/jobs/rate
+Content-Type: application/json
+Authorization: Bearer mock_customer_token
+
+{
+  "jobId": "invalid_job_id",
+  "score": 5
+}
+
+### 25. Error Test - Unauthorized Access
+GET {{baseUrl}}/api/provider/jobs
+Content-Type: application/json
+
+### 26. Error Test - Invalid Status Transition
+POST {{baseUrl}}/api/provider/jobs/update-status
+Content-Type: application/json
+Authorization: Bearer mock_provider_token
+
+{
+  "jobId": "{{jobId}}",
+  "to": "invalid_status"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

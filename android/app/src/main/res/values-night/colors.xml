@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark mode brand colors -->
+    <color name="colorPrimary">#3b82f6</color>
+    <color name="colorPrimaryDark">#2563eb</color>
+    <color name="colorAccent">#3b82f6</color>
+    
+    <!-- Dark mode splash screen colors -->
+    <color name="splash_background_light">#1f2937</color>
+    <color name="splash_background_dark">#111827</color>
+</resources>
