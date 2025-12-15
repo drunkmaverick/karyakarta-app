@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../../src/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { PayoutDoc, ProviderPayoutsResponse } from '../../../src/types/app';
@@ -13,7 +13,7 @@ export default function ProviderPayoutsPage() {
   const [nextCursor, setNextCursor] = useState<string | undefined>();
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const loadPayouts = async (cursor?: string) => {
+  const loadPayouts = useCallback(async (cursor?: string) => {
     try {
       if (!user) return;
 
@@ -46,13 +46,13 @@ export default function ProviderPayoutsPage() {
       setIsLoading(false);
       setIsLoadingMore(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (user) {
       loadPayouts();
     }
-  }, [user]);
+  }, [user, loadPayouts]);
 
   const getStatusBadge = (status: string) => {
     const statusClasses = {

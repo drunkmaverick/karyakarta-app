@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Payout } from './types';
 import { mapApiPayoutToType, formatCurrency, formatTimestamp, toCsv, downloadCsv } from './utils';
 import StatusBadge from './components/StatusBadge';
@@ -48,7 +48,7 @@ export default function PayoutsPage() {
   }, [filteredPayouts, payouts]);
 
   // Fetch payouts
-  const fetchPayouts = async () => {
+  const fetchPayouts = useCallback(async () => {
     setIsLoading(true);
     setError('');
     try {
@@ -66,7 +66,7 @@ export default function PayoutsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // Apply filters
   useEffect(() => {
@@ -96,13 +96,18 @@ export default function PayoutsPage() {
   // Initial fetch
   useEffect(() => {
     fetchPayouts();
-  }, []);
+  }, [fetchPayouts]);
 
-  // Auto-refresh effect
+  // Auto-refresh effect - use ref to avoid dependency on fetchPayouts
+  const fetchPayoutsRef = useRef(fetchPayouts);
+  useEffect(() => {
+    fetchPayoutsRef.current = fetchPayouts;
+  }, [fetchPayouts]);
+
   useEffect(() => {
     if (!autoRefresh) return;
     const id = setInterval(() => {
-      fetchPayouts();
+      fetchPayoutsRef.current();
     }, 10_000);
     return () => clearInterval(id);
   }, [autoRefresh]);

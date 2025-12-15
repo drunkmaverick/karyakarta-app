@@ -58,11 +58,11 @@ export default function LoginPage() {
       const data = userDoc.data() as any;
       const role = data?.role || '';
       if (isProviderRole(role)) {
-        router.push('/provider/dashboard');
+        router.push('/dashboard/provider');
         return;
       }
       if (role && role.toLowerCase() === 'customer' || role.toLowerCase() === 'user') {
-        router.push('/customer/dashboard');
+        router.push('/dashboard/customer');
         return;
       }
     }
@@ -81,21 +81,21 @@ export default function LoginPage() {
       ]);
 
       if (spSnap && !spSnap.empty) {
-        router.push('/provider/dashboard');
+        router.push('/dashboard/provider');
         return;
       }
       if (workerSnap && !workerSnap.empty) {
-        router.push('/provider/dashboard');
+        router.push('/dashboard/provider');
         return;
       }
       if (customerSnap && !customerSnap.empty) {
-        router.push('/customer/dashboard');
+        router.push('/dashboard/customer');
         return;
       }
     }
 
-    // 3) Last resort
-    router.push('/dashboard');
+    // 3) Last resort - redirect to login if role cannot be determined
+    router.push('/login');
   };
 
   // Auto-redirect if already logged in

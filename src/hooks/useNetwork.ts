@@ -2,7 +2,7 @@
  * React hook for network connectivity state
  */
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useNetworkStore, useIsOnline, useIsConnecting, useRetryCount, useNetworkStatus } from '../store/networkStore';
 import { networkFetch, networkGet, networkPost, networkPut, networkDelete, type FetchOptions } from '../lib/network';
 
@@ -79,23 +79,41 @@ export function useNetworkEffect(
 ) {
   const { isOnline, isConnecting } = useNetwork();
 
+  // Use refs to avoid dependency on callbacks
+  const onOnlineRef = useRef(onOnline);
+  const onOfflineRef = useRef(onOffline);
+  const onConnectingChangeRef = useRef(onConnectingChange);
+
+  // Update refs when callbacks change
   useEffect(() => {
-    if (isOnline && onOnline) {
-      onOnline();
-    }
-  }, [isOnline, onOnline]);
+    onOnlineRef.current = onOnline;
+  }, [onOnline]);
 
   useEffect(() => {
-    if (!isOnline && onOffline) {
-      onOffline();
-    }
-  }, [isOnline, onOffline]);
+    onOfflineRef.current = onOffline;
+  }, [onOffline]);
 
   useEffect(() => {
-    if (onConnectingChange) {
-      onConnectingChange(isConnecting);
+    onConnectingChangeRef.current = onConnectingChange;
+  }, [onConnectingChange]);
+
+  useEffect(() => {
+    if (isOnline && onOnlineRef.current) {
+      onOnlineRef.current();
     }
-  }, [isConnecting, onConnectingChange]);
+  }, [isOnline]);
+
+  useEffect(() => {
+    if (!isOnline && onOfflineRef.current) {
+      onOfflineRef.current();
+    }
+  }, [isOnline]);
+
+  useEffect(() => {
+    if (onConnectingChangeRef.current) {
+      onConnectingChangeRef.current(isConnecting);
+    }
+  }, [isConnecting]);
 }
 
 /**

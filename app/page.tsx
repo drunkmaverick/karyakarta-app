@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+
 export default function Page() {
-  return <pre>root page (app/)</pre>;
+  redirect('/login');
 }
