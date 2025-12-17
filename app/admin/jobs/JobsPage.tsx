@@ -101,7 +101,7 @@ function CreateJobDrawer({
 }) {
   const [customerId, setCustomerId] = useState('');
   const [areaId, setAreaId] = useState('');
-  const [service, setService] = useState<'deep_cleaning' | 'ac_service' | ''>('');
+  const [service, setService] = useState<'deep_cleaning' | ''>('');
   const [scheduledAt, setScheduledAt] = useState<string>(''); // ISO (local) via input datetime-local
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState('');
@@ -207,7 +207,6 @@ function CreateJobDrawer({
             >
               <option value="">Select a service…</option>
               <option value="deep_cleaning">Deep Cleaning</option>
-              <option value="ac_service">AC Service</option>
             </select>
           </div>
           <div>

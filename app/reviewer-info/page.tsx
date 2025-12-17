@@ -202,7 +202,7 @@ function ReviewerInfoPageContent() {
               </h3>
               <div className="space-y-2 text-gray-700">
                 <p>• Login as customer</p>
-                <p>• Navigate to <code className="bg-gray-100 px-2 py-1 rounded text-sm">/bookings/new</code></p>
+                <p>• Navigate to <code className="bg-gray-100 px-2 py-1 rounded text-sm">/cleanup/create</code></p>
                 <p>• Fill out booking form with test data</p>
                 <p>• <strong>Note:</strong> No payment required - booking completes directly</p>
                 <p>• Verify booking appears in customer history</p>

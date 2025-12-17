@@ -3,22 +3,22 @@ import React from 'react';
 
 const services = [
   {
-    name: 'Maid Service',
+    name: 'Community Cleanup',
     status: 'available',
+    emoji: '🌱',
+    description: 'Join neighborhood cleanup campaigns.',
+  },
+  {
+    name: 'On-demand Maid Service',
+    status: 'coming-soon',
     emoji: '🧼',
     description: 'Daily and periodic home cleaning services.',
   },
   {
-    name: 'Plumbing',
+    name: 'Private Elderly Concierge',
     status: 'coming-soon',
-    emoji: '🛠️',
-    description: 'Fix leaks, install taps, and more.',
-  },
-  {
-    name: 'Electricals',
-    status: 'coming-soon',
-    emoji: '💡',
-    description: 'Switches, wiring, appliance setup.',
+    emoji: '👴',
+    description: 'Personalized assistance for elderly care.',
   },
 ];
 

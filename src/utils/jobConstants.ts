@@ -17,12 +17,10 @@ export const KYC_STATUSES = {
 } as const;
 
 // PASTE HERE SERVICE_TYPES
+// Note: Only Community Cleanup is active. Maid Service and Elderly Concierge are coming soon.
 export const SERVICE_TYPES = [
   'deep_cleaning',
-  'plumbing',
-  'electrical',
-  'ac_service',
-  'maid_service'
+  'maid_service' // Coming soon
 ] as const;
 
 

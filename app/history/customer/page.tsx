@@ -228,10 +228,10 @@ export default function CustomerHistoryPage() {
         <EmptyState
           icon={Calendar}
           title="No bookings yet"
-          description="You haven't booked any services yet. Get started by booking your first service!"
+          description="You haven't booked any services yet. Get started by creating a community cleanup!"
           action={{
-            label: "Book Your First Service",
-            onClick: () => router.push('/bookings/new')
+            label: "Create Community Cleanup",
+            onClick: () => router.push('/cleanup/create')
           }}
         />
       ) : (

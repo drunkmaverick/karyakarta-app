@@ -11,7 +11,7 @@ const policies = [
   {
     icon: <RefreshCcw className="w-6 h-6 text-blue-600" />,
     title: "7-Day Service Warranty",
-    description: "For plumbing, electrical, and cleaning. If issues arise, we'll fix it at no cost.",
+    description: "For cleaning services. If issues arise, we'll fix it at no cost.",
   },
   {
     icon: <Clock className="w-6 h-6 text-blue-600" />,

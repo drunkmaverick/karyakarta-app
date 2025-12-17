@@ -6,11 +6,7 @@ import { Calendar, Clock, MapPin, User, MessageSquare, CheckCircle, AlertCircle,
 import { paymentsEnabled } from '../../../src/lib/flags';
 
 const SERVICES = [
-  { id: 'deep_cleaning', name: 'Deep Cleaning', description: 'Comprehensive cleaning service' },
-  { id: 'ac_service', name: 'AC Service', description: 'Air conditioning maintenance and cleaning' },
-  { id: 'plumbing', name: 'Plumbing', description: 'Basic plumbing repairs and maintenance' },
-  { id: 'electrical', name: 'Electrical', description: 'Electrical repairs and installations' },
-  { id: 'maid_service', name: 'Maid Service', description: 'Regular housekeeping service' },
+  { id: 'maid_service', name: 'On-demand Maid Service', description: 'Regular housekeeping service (Coming Soon)', disabled: true },
 ];
 
 export default function NewBookingPage() {
@@ -46,10 +42,6 @@ export default function NewBookingPage() {
       
       // Calculate price based on service type
       const servicePrices: Record<string, number> = {
-        deep_cleaning: 1499,
-        ac_service: 699,
-        plumbing: 399,
-        electrical: 499,
         maid_service: 299
       };
       

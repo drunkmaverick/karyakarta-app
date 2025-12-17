@@ -24,20 +24,6 @@ const slides = [
     buttonLink: '#',
     image: '/banners/bathroom-cleaning.png',
   },
-  {
-    title: 'Electrical Services',
-    subtitle: 'Skilled electricians for every need.',
-    buttonText: 'Coming Soon',
-    buttonLink: '#',
-    image: '/banners/electrical.png',
-  },
-  {
-    title: 'Plumbing Services',
-    subtitle: 'Reliable plumbers at your service.',
-    buttonText: 'Coming Soon',
-    buttonLink: '#',
-    image: '/banners/plumbing.png',
-  },
 ];
 
 export default function HeroSlider() {

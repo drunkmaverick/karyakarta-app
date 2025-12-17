@@ -2,33 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../../src/hooks/useAuth';
 import { useApiError } from '../../../src/hooks/useApiError';
-import { db } from '../../../src/services/firebase';
-import {
-  collection,
-  getDocs,
-  doc,
-  runTransaction,
-  Timestamp,
-} from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { setupPushNotifications, onForegroundMessage, unregisterTokenOnServer, deleteLocalToken } from '../../../src/utils/pushClient';
 import { getCurrentLocation } from '../../../src/lib/geo';
 import ErrorBoundary from '../../../src/components/ErrorBoundary';
 
-type Campaign = {
-  id: string;
-  title: string;
-  description?: string;
-  status: 'scheduled' | 'live' | 'done';
-  organizerId: string;
-  organizerName?: string;
-  location?: { lat: number; lng: number };
-  locationName?: string;               // ← human-readable label (optional)
-  startAt?: Timestamp;
-  joinedCount?: number;
-  participants?: string[];             // array of userIds
-};
 
 export default function CustomerDashboard() {
   const { user, loading } = useAuth();
@@ -50,9 +29,7 @@ export default function CustomerDashboard() {
     return guestId;
   };
 
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [fetching, setFetching] = useState(true);
-  const [joiningId, setJoiningId] = useState<string | null>(null);
+  const [fetching, setFetching] = useState(false);
   const [message, setMessage] = useState<string>('');
   const [notificationStatus, setNotificationStatus] = useState<'unknown' | 'granted' | 'denied'>('unknown');
   const [locationStatus, setLocationStatus] = useState<string>('');
@@ -102,78 +79,15 @@ export default function CustomerDashboard() {
       setMessage(`📱 New notification: ${payload.notification?.title || 'Campaign update'}`);
     });
 
-    const load = async () => {
-      setFetching(true);
-      try {
-        // Fetch campaigns from the API instead of directly from Firestore
-        const response = await fetch('/api/campaigns/list?limit=10');
-        const data = await response.json();
-        
-        if (data.success) {
-          const items: Campaign[] = data.campaigns.map((c: any) => ({
-            id: c.id,
-            title: c.title,
-            description: c.description,
-            status: c.status === 'live' ? 'live' : c.status === 'scheduled' ? 'scheduled' : 'done',
-            organizerId: 'admin', // Campaigns are created by admin
-            organizerName: 'KaryaKarta Admin',
-            location: c.center,
-            locationName: c.areaName,
-            joinedCount: 0, // This would need to be tracked separately
-            participants: [], // This would need to be tracked separately
-          }));
-          setCampaigns(items);
-        } else {
-          throw new Error(data.error || 'Failed to load campaigns');
-        }
-      } catch (e: any) {
-        console.error('🔥 load error:', e);
-        setMessage(e.message || 'Failed to load campaigns');
-      } finally {
-        setFetching(false);
-      }
-    };
-    load();
+    // Campaign listing removed - use /cleanup page instead
+    setFetching(false);
 
     return () => {
       unsubscribeForeground();
     };
   }, [user]);
 
-  const handleJoin = async (campaignId: string) => {
-    if (!(user as any)?.uid) {
-      router.push('/login');
-      return;
-    }
-
-    setJoiningId(campaignId);
-    setMessage('');
-    try {
-      // For now, just show a message since we don't have a join API yet
-      // In a real implementation, you would call an API to join the campaign
-      setMessage('🎉 Campaign join functionality coming soon!');
-      
-      // Optimistic local update (mock)
-      setCampaigns((prev) =>
-        prev.map((c) =>
-          c.id === campaignId
-            ? {
-                ...c,
-                participants: c.participants
-                  ? [...c.participants, (user as any).uid]
-                  : [(user as any).uid],
-                joinedCount: (c.joinedCount || 0) + 1,
-              }
-            : c
-        )
-      );
-    } catch (e: any) {
-      console.error('🔥 join error:', e);
-      setMessage(e.message || 'Failed to join');
-    } finally {
-      setJoiningId(null);
-    }
-  };
+  // Join functionality moved to /cleanup/[id] page
 
   const handleAutoSetup = async () => {
     try {
@@ -357,12 +271,30 @@ export default function CustomerDashboard() {
           {/* Quick Actions */}
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <Link
-              href="/bookings/new"
+              href="/cleanup/create"
+              className="bg-blue-500 text-white p-3 sm:p-4 rounded-lg shadow border hover:shadow-md transition-shadow"
+            >
+              <h3 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">🌱 Create Community Cleanup</h3>
+              <p className="text-xs sm:text-sm text-white/90">Start a new neighborhood cleanup campaign</p>
+            </Link>
+
+            <Link
+              href="/cleanup"
               className="bg-white p-3 sm:p-4 rounded-lg shadow border hover:shadow-md transition-shadow"
             >
-              <h3 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">📅 New Booking</h3>
-              <p className="text-xs sm:text-sm text-gray-600">Schedule a new cleaning or maintenance service</p>
+              <h3 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">🔍 Join Nearby Cleanups</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Find and join cleanup campaigns in your area</p>
             </Link>
+
+            <div className="bg-gray-100 p-3 sm:p-4 rounded-lg shadow border opacity-60 cursor-not-allowed">
+              <h3 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">🧼 On-demand Maid Service</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Coming Soon</p>
+            </div>
+
+            <div className="bg-gray-100 p-3 sm:p-4 rounded-lg shadow border opacity-60 cursor-not-allowed">
+              <h3 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">👴 Private Elderly Concierge</h3>
+              <p className="text-xs sm:text-sm text-gray-600">Coming Soon</p>
+            </div>
 
             <Link
               href="/history/customer"
@@ -474,66 +406,6 @@ export default function CustomerDashboard() {
 
       {message && <p className="mb-3 text-sm">{message}</p>}
       {locationStatus && <p className="mb-3 text-sm text-gray-600">{locationStatus}</p>}
-
-      {campaigns.length === 0 ? (
-        <p className="text-gray-500">No campaigns yet.</p>
-      ) : (
-        <div className="space-y-4">
-          {campaigns.map((c) => {
-            const userAlreadyJoined = c.participants?.includes((user as any).uid) ?? false;
-            const statusBadge =
-              c.status === 'live'
-                ? 'bg-green-100 text-green-800'
-                : c.status === 'scheduled'
-                ? 'bg-yellow-100 text-yellow-800'
-                : 'bg-gray-200 text-gray-800';
-
-            return (
-              <div
-                key={c.id}
-                className="rounded border bg-white p-4 shadow-sm"
-              >
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold">{c.title}</h2>
-                  <span className={`rounded-full px-2 py-0.5 text-xs ${statusBadge}`}>
-                    {c.status}
-                  </span>
-                </div>
-
-                <p className="mt-1 text-sm text-gray-600">
-                  📍 {c.locationName || 'Unknown area'}
-                </p>
-
-                {c.description && (
-                  <p className="mt-2 text-sm text-gray-700">{c.description}</p>
-                )}
-
-                <div className="mt-3 flex items-center justify-between">
-                  <p className="text-sm text-gray-700">
-                    👥 {c.joinedCount || 0} joined
-                  </p>
-
-                  <button
-                    disabled={joiningId === c.id || userAlreadyJoined}
-                    onClick={() => handleJoin(c.id)}
-                    className={`rounded px-3 py-1 text-sm transition ${
-                      userAlreadyJoined
-                        ? 'cursor-not-allowed bg-gray-200 text-gray-500'
-                        : 'bg-[#1157d3] text-white hover:bg-[#0f4fc0]'
-                    }`}
-                  >
-                    {userAlreadyJoined
-                      ? 'Joined'
-                      : joiningId === c.id
-                      ? 'Joining…'
-                      : 'Join campaign'}
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
       </main>
     </ErrorBoundary>
   );

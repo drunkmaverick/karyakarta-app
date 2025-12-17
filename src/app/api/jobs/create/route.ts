@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 }
 
 async function quote(service: string, _areaId: string) {
-  const base: Record<string, number> = { deep_cleaning: 1499, ac_service: 699 };
+  const base: Record<string, number> = { deep_cleaning: 1499 };
   return Math.round(base[service] ?? 999);
 }
 

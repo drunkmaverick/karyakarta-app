@@ -211,14 +211,10 @@ export interface WebhookEvent {
 }
 
 // Service types
+// Note: Only Community Cleanup is active. Maid Service and Elderly Concierge are coming soon.
 export const SERVICE_TYPES = [
   'deep_clean',
   'regular_clean',
-  'plumbing',
-  'electrical',
-  'ac_service',
-  'carpentry',
-  'painting',
   'other'
 ] as const;
 
